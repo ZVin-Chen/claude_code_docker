@@ -4,10 +4,13 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 
-# 安装Node.js
+# 安装Node.js和Python
 RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
+    python3 \
+    python3-pip \
+    python3-venv \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean \
@@ -19,4 +22,11 @@ WORKDIR /workspace
 
 # 全局安装 claude-code
 RUN npm install -g @anthropic-ai/claude-code
+
+# 复制启动脚本
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# 设置入口点
+ENTRYPOINT ["/entrypoint.sh"]
 
